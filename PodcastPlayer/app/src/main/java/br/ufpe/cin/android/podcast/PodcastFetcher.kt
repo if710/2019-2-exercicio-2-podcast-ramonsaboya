@@ -8,11 +8,16 @@ class PodcastFetcher(val db: AppDatabase, val processItems: (List<ItemFeed>) -> 
     AsyncTask<String, Int, List<ItemFeed>>() {
 
     override fun doInBackground(vararg paths: String): List<ItemFeed> {
-        val url = URL(paths[0])
-        val feed = url.readText()
-        val episodes = Parser.parse(feed)
-        db.episodeDao().insertAll(*episodes.toTypedArray())
-        return episodes
+        try { // If any RSS parsing fails, retrieve data from DB
+            val url = URL(paths[0])
+            val feed = url.readText()
+            val episodes = Parser.parse(feed)
+            db.episodeDao().insertAll(*episodes.toTypedArray())
+            return episodes
+        }
+        catch (e: Exception) {
+            return db.episodeDao().getAll()
+        }
     }
 
     override fun onPostExecute(items: List<ItemFeed>) {
