@@ -8,8 +8,6 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -36,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
 
-        adapter = PodcastAdapter(emptyList())
+        adapter = PodcastAdapter(this, emptyList())
         recyclerView.adapter = adapter
 
         // Fetch episodes

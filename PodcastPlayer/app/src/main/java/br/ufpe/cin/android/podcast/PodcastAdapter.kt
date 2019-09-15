@@ -1,12 +1,16 @@
 package br.ufpe.cin.android.podcast
 
+import android.app.Application
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
+import kotlinx.android.synthetic.main.itemlista.view.*
 
-class PodcastAdapter(private var episodes: List<ItemFeed>) : RecyclerView.Adapter<EpisodeHolder>() {
+class PodcastAdapter(private val application: MainActivity, private var episodes: List<ItemFeed>) :
+    RecyclerView.Adapter<EpisodeHolder>() {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -18,8 +22,19 @@ class PodcastAdapter(private var episodes: List<ItemFeed>) : RecyclerView.Adapte
     }
 
     override fun onBindViewHolder(holder: EpisodeHolder, position: Int) {
-        holder.title.text = episodes[position].title
-        holder.date.text = episodes[position].pubDate
+        val episode = episodes[position]
+        holder.itemView.setOnClickListener{
+            val intent = Intent(
+                application.applicationContext,
+                EpisodeDetailActivity::class.java
+            )
+            intent.putExtra(EpisodeDetailActivity.INTENT_EPISODE_TITLE, episode.title)
+            intent.putExtra(EpisodeDetailActivity.INTENT_EPISODE_DESCRIPTION, episode.description)
+            intent.putExtra(EpisodeDetailActivity.INTENT_EPISODE_LINK, episode.link)
+            application.startActivity(intent)
+        }
+        holder.title.text = episode.title
+        holder.date.text = episode.pubDate
     }
 
     override fun getItemCount() = episodes.size
